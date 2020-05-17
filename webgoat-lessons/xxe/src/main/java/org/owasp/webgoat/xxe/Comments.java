@@ -80,9 +80,14 @@ public class Comments {
         JAXBContext jc = JAXBContext.newInstance(Comment.class);
 
         XMLInputFactory xif = XMLInputFactory.newFactory();
+
+        /*Without DTD , There is no necessity for external entities*/
         //xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, true);
+
+        /*As we are not doing any specific validation , Disabling the below line*/
         //xif.setProperty(XMLInputFactory.IS_VALIDATING, false);
 
+        /*Disable the support for DTD if its not required */
         xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
         XMLStreamReader xsr = xif.createXMLStreamReader(new StringReader(xml));
 

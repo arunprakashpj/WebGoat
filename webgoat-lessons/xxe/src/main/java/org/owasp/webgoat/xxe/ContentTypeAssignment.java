@@ -48,6 +48,7 @@ public class ContentTypeAssignment extends AssignmentEndpoint {
     @Autowired
     private Comments comments;
 
+    /*Restricting the application to consume only JSON Value type , as its the only expected type for us */
     @PostMapping(path = "xxe/content-type", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public AttackResult createNewUser(@RequestBody String commentStr, @RequestHeader("Content-Type") String contentType) throws Exception {
