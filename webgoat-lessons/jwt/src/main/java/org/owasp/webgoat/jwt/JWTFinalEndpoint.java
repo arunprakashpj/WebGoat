@@ -172,6 +172,7 @@ public class JWTFinalEndpoint extends AssignmentEndpoint {
                             errorMessage[0] = e.getMessage();
                         }
                         return null;
+                        // It is always required to use  parseClaimJWS
                     }
                 }).parseClaimsJws(token);
                 if (errorMessage[0] != null) {

@@ -22,10 +22,7 @@
 
 package org.owasp.webgoat.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.impl.TextCodec;
 import org.apache.commons.lang3.StringUtils;
 import org.owasp.webgoat.assignments.AssignmentEndpoint;
@@ -160,7 +157,8 @@ public class JWTVotesEndpoint extends AssignmentEndpoint {
             return failed(this).feedback("jwt-invalid-token").build();
         } else {
             try {
-                Jwt jwt = Jwts.parser().setSigningKey(JWT_PASSWORD).parse(accessToken);
+                // Using parseClaimJWS instead of parse function, thus we are specifically asking the application to validate the signature
+                Jwt jwt = Jwts.parser().setSigningKey(JWT_PASSWORD).parseClaimsJws(accessToken);
                 Claims claims = (Claims) jwt.getBody();
                 boolean isAdmin = Boolean.valueOf((String) claims.get("admin"));
                 if (!isAdmin) {
@@ -169,7 +167,9 @@ public class JWTVotesEndpoint extends AssignmentEndpoint {
                     votes.values().forEach(vote -> vote.reset());
                     return success(this).build();
                 }
-            } catch (JwtException e) {
+            } catch (SignatureException e) {
+                return failed(this).feedback("Signature Failed").output(e.toString()).build();
+            }catch (JwtException e) {
                 return failed(this).feedback("jwt-invalid-token").output(e.toString()).build();
             }
         }
